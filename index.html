@@ -181,7 +181,7 @@ section{position:relative;z-index:2}
 .zenith-pill-wrap{position:relative;border-radius:100px;padding:2px;background:conic-gradient(from var(--a,0deg),rgba(0,229,255,0) 0%,var(--neon) 15%,rgba(0,229,255,0) 30%);animation:spinBorder 3s linear infinite}
 @property --a{syntax:'<angle>';initial-value:0deg;inherits:false}
 @keyframes spinBorder{to{--a:360deg}}
-.zenith-bar{position:relative;z-index:1;border-radius:100px;background:rgba(5,10,20,0.97);padding:14px 16px 14px 22px;display:flex;align-items:center;gap:12px;box-shadow:0 0 40px rgba(0,229,255,.1),0 10px 50px rgba(0,0,0,.9),inset 0 1px 0 rgba(255,255,255,.04)}
+.zenith-bar{position:relative;z-index:1;border-radius:100px;background:rgba(5,10,20,0.97);padding:14px 16px 14px 22px;display:flex;align-items:center;gap:16px;box-shadow:0 0 40px rgba(0,229,255,.1),0 10px 50px rgba(0,0,0,.9),inset 0 1px 0 rgba(255,255,255,.04)}
 .zenith-pulse{width:8px;height:8px;border-radius:50%;background:var(--neon);box-shadow:0 0 10px var(--neon),0 0 20px rgba(0,229,255,.4);animation:zpulse 2.2s ease-in-out infinite;flex-shrink:0}
 @keyframes zpulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(.65);opacity:.4}}
 .zenith-label-btn{flex:1;background:none;border:none;text-align:left;cursor:pointer;display:flex;flex-direction:column;gap:2px}
@@ -219,15 +219,7 @@ section{position:relative;z-index:2}
 .q-suggestions{display:flex;flex-wrap:wrap;gap:8px;padding:0 24px 14px}
 .q-suggest-btn{padding:8px 14px;background:rgba(0,229,255,.04);border:1px solid rgba(0,229,255,.15);color:var(--text-dim);font-size:11px;cursor:pointer;transition:.2s;border-radius:20px}
 .q-suggest-btn:hover{border-color:var(--neon);color:var(--text)}
-.voice-status{padding:8px 24px;background:rgba(0,229,255,.05);border-top:1px solid rgba(0,229,255,.1);display:none;align-items:center;gap:10px}
-.voice-status.show{display:flex}
-.voice-wave{display:flex;gap:3px;align-items:center;height:20px}
-.voice-wave span{display:block;width:3px;background:var(--neon);border-radius:2px;animation:wave 1.2s ease-in-out infinite}
-.voice-wave span:nth-child(2){animation-delay:.1s}
-.voice-wave span:nth-child(3){animation-delay:.2s}
-.voice-wave span:nth-child(4){animation-delay:.3s}
-.voice-wave span:nth-child(5){animation-delay:.4s}
-@keyframes wave{0%,100%{height:4px}50%{height:18px}}
+50%{height:18px}}
 .voice-text{font-size:11px;color:var(--neon);opacity:.8}
 .ai-input-area{padding:14px 22px;border-top:1px solid var(--border);display:flex;gap:10px;align-items:center}
 .ai-input{flex:1;background:rgba(255,255,255,.04);border:1px solid var(--border);padding:11px 16px;color:var(--text);font-size:13px;font-family:'Inter',sans-serif;outline:none;transition:.2s;border-radius:24px}
@@ -248,7 +240,7 @@ section{position:relative;z-index:2}
 .profile-name{font-family:'Cinzel',serif;font-size:13px;color:var(--gold-light);margin-bottom:3px}
 .profile-email{font-size:11px;color:var(--text-dim)}
 .menu-links{padding:8px 18px;flex:1;overflow-y:auto}
-.menu-link{display:flex;align-items:center;gap:12px;padding:13px 10px;border-bottom:1px solid rgba(201,168,76,.05);color:var(--text-dim);font-size:13px;cursor:pointer;transition:.2s}
+.menu-link{display:flex;align-items:center;gap:16px;padding:13px 10px;border-bottom:1px solid rgba(201,168,76,.05);color:var(--text-dim);font-size:13px;cursor:pointer;transition:.2s}
 .menu-link:hover{color:var(--gold);padding-left:16px}
 .link-icon{font-size:16px;width:22px;text-align:center;color:var(--gold-dim)}
 .menu-footer{padding:18px 28px;border-top:1px solid var(--border)}
@@ -403,7 +395,7 @@ section{position:relative;z-index:2}
 
         <!-- POLL -->
         <div class="poll-card">
-          <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px">
+          <div style="display:flex;align-items:center;gap:16px;margin-bottom:20px">
             <div class="post-avatar" style="width:40px;height:40px;font-size:13px"><img src="https://i.pravatar.cc/150?img=47" alt="" onerror="this.style.display='none';this.parentNode.textContent='AA'"></div>
             <div><div style="font-family:'Cinzel',serif;font-size:12px;color:var(--gold-light)">Ambreen Aisha</div><div style="font-size:10px;color:var(--text-dim)">Community Poll · 3d ago</div></div>
             <div class="post-tag" style="margin-left:auto">POLL</div>
@@ -577,9 +569,9 @@ section{position:relative;z-index:2}
       <div class="zenith-pulse"></div>
       <button class="zenith-label-btn" onclick="openAI()">
         <div class="zenith-main-text">Talk with Zenith</div>
-        
+        <div class="zenith-sub-text">AI Career Guide · Always Here</div>
       </button>
-      <button class="mic-btn" id="micBtn" onclick="toggleVoice()" title="Voice mode">🎙</button>
+      
     </div>
   </div>
 </div>
@@ -603,10 +595,6 @@ section{position:relative;z-index:2}
         <div class="msg-label">ZENITH</div>
         <div class="msg-bubble">Welcome. I'm Zenith — your personal clarity guide.<br><br>I'll ask you a few focused questions to understand exactly where you are and where you want to go. You can type or tap 🎙 to speak.<br><br><strong>Let's start: Are you at the beginning of your career, mid-way through it, or feeling stuck at a certain level?</strong></div>
       </div>
-    </div>
-    <div class="voice-status" id="voiceStatus">
-      <div class="voice-wave"><span></span><span></span><span></span><span></span><span></span></div>
-      <div class="voice-text" id="voiceText">Listening...</div>
     </div>
     <div class="q-suggestions" id="qSuggestions">
       <button class="q-suggest-btn" onclick="selectQ('I am just starting out as a student or fresh graduate')">Just starting out</button>
@@ -650,9 +638,9 @@ document.querySelectorAll('[data-reveal]').forEach(el=>obs.observe(el));
 
 // AI MODAL
 function openAI(){document.getElementById('aiModal').classList.add('open')}
-function closeAI(){document.getElementById('aiModal').classList.remove('open');stopVoice()}
+function closeAI(){document.getElementById('aiModal').classList.remove('open')}
 function openAIWithQ(q){openAI();setTimeout(()=>{document.getElementById('aiInput').value=q;sendMessage()},400)}
-function selectQ(q){voiceMode=false;document.getElementById('aiInput').value=q;sendMessage()}
+function selectQ(q){document.getElementById('aiInput').value=q;sendMessage()}
 
 // CHAT
 const conversationHistory=[];
@@ -665,9 +653,7 @@ Keep responses warm, direct, under 200 words. No corporate jargon. Speak like a 
 
 // Backend URL — update this after you deploy to Vercel
 const BACKEND_URL='https://zenith-backend-brown.vercel.app/api/chat';
-let voiceMode=false;
-
-async function sendMessage(fromVoice=false){
+async function sendMessage(){
   const input=document.getElementById('aiInput');
   const msg=input.value.trim();
   if(!msg)return;
@@ -697,7 +683,6 @@ async function sendMessage(fromVoice=false){
     const reply=data.content?.[0]?.text||"Tell me more about where you are in your career right now.";
     addMsg('zenith',reply);
     conversationHistory.push({role:'assistant',content:reply});
-    if(voiceMode)speakText(reply);
   }catch(e){
     removeTyping(tid);
     addMsg('zenith','Connection failed: '+e.message+'. Is the Vercel backend deployed?');
@@ -726,103 +711,6 @@ function addTyping(){
 }
 function removeTyping(id){document.getElementById(id)?.remove()}
 
-// VOICE - TEXT TO SPEECH
-const synth=window.speechSynthesis;
-let currentUtterance=null;
-let voicesReady=false;
-let voiceQueue=null;
-
-function getFemalevoice(){
-  const voices=synth.getVoices();
-  // Priority list — sweet, clear female English voices
-  return voices.find(v=>/Samantha/i.test(v.name))
-    ||voices.find(v=>/Karen/i.test(v.name))
-    ||voices.find(v=>/Moira/i.test(v.name))
-    ||voices.find(v=>/Tessa/i.test(v.name))
-    ||voices.find(v=>/Veena/i.test(v.name))
-    ||voices.find(v=>/Aria/i.test(v.name))
-    ||voices.find(v=>/Zira/i.test(v.name))
-    ||voices.find(v=>/Google UK English Female/i.test(v.name))
-    ||voices.find(v=>/Google US English/i.test(v.name)&&v.name.toLowerCase().includes('female'))
-    ||voices.find(v=>v.lang==='en-US'&&v.name.toLowerCase().includes('female'))
-    ||voices.find(v=>v.lang==='en-GB'&&v.name.toLowerCase().includes('female'))
-    ||voices.find(v=>v.lang.startsWith('en')&&v.name.toLowerCase().includes('female'))
-    ||voices.find(v=>v.lang.startsWith('en'))
-    ||voices[0];
-}
-
-function doSpeak(text){
-  const clean=text.replace(/<[^>]*>/g,'').replace(/\*+/g,'').replace(/[✦◎◈◉⟡★]/g,'').trim();
-  if(!clean)return;
-  synth.cancel();
-  currentUtterance=new SpeechSynthesisUtterance(clean);
-  currentUtterance.rate=0.88;
-  currentUtterance.pitch=1.08;  // slightly higher = sweeter
-  currentUtterance.volume=1.0;
-  const v=getFemalevoice();
-  if(v)currentUtterance.voice=v;
-  synth.speak(currentUtterance);
-}
-
-function speakText(text){
-  if(!synth)return;
-  if(synth.getVoices().length>0){
-    doSpeak(text);
-  } else {
-    // Voices not loaded yet — queue it
-    voiceQueue=text;
-  }
-}
-
-if(synth){
-  synth.onvoiceschanged=()=>{
-    voicesReady=true;
-    if(voiceQueue){doSpeak(voiceQueue);voiceQueue=null;}
-  };
-  // Trigger voice load
-  synth.getVoices();
-}
-
-// VOICE - SPEECH TO TEXT
-let recognition=null,isRecording=false;
-function toggleVoice(){isRecording?stopVoice():startVoice()}
-function startVoice(){
-  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-  if(!SR){alert('Voice input requires Chrome or Edge. Please type your message instead.');return}
-  openAI();
-  voiceMode=true; // entering voice mode — Zenith will speak back
-  recognition=new SR();
-  recognition.lang='en-US';recognition.interimResults=true;recognition.continuous=false;
-  isRecording=true;
-  document.getElementById('micBtn').classList.add('recording');
-  document.getElementById('micBtn').textContent='⏹';
-  const vs=document.getElementById('voiceStatus'),vt=document.getElementById('voiceText');
-  vs.classList.add('show');vt.textContent='Listening...';
-  const input=document.getElementById('aiInput');
-  recognition.onresult=e=>{
-    let interim='',final='';
-    for(let i=e.resultIndex;i<e.results.length;i++){
-      if(e.results[i].isFinal)final+=e.results[i][0].transcript;
-      else interim+=e.results[i][0].transcript;
-    }
-    input.value=final||interim;
-    vt.textContent=final?`Heard: "${final}"`:interim?`"${interim}"...`:'Listening...';
-    if(final){stopVoice();setTimeout(()=>sendMessage(true),400)}
-  };
-  recognition.onerror=()=>{vt.textContent='Could not hear clearly. Try again.';setTimeout(stopVoice,1500)};
-  recognition.onend=()=>{if(isRecording)stopVoice()};
-  recognition.start();
-}
-function stopVoice(){
-  isRecording=false;
-  try{recognition&&recognition.stop()}catch(e){}
-  document.getElementById('micBtn').classList.remove('recording');
-  document.getElementById('micBtn').textContent='🎙';
-  setTimeout(()=>document.getElementById('voiceStatus').classList.remove('show'),1000);
-}
-
-// Typing in the input box switches back to text mode (no voice playback)
-document.getElementById('aiInput').addEventListener('keydown',()=>{voiceMode=false})
 </script>
 </body>
 </html>
