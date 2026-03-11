@@ -663,8 +663,9 @@ const systemPrompt=`You are Zenith, a warm, sharp, and empathetic AI career guid
 4. End every final answer with: "Does this roadmap resonate with you? If you'd like deeper personalised guidance, you can post your question to one of our expert counsellors — they respond within 24 hours."
 Keep responses warm, direct, under 200 words. No corporate jargon. Speak like a trusted senior who genuinely cares.`;
 
-const API_KEY='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';
-let voiceMode=false; // true when user triggered via mic
+// Backend URL — update this after you deploy to Vercel
+const BACKEND_URL='https://zenith-backend-hfylzkosh-inyourservice247-2386s-projects.vercel.app/api/chat';
+let voiceMode=false;
 
 async function sendMessage(fromVoice=false){
   const input=document.getElementById('aiInput');
@@ -676,17 +677,16 @@ async function sendMessage(fromVoice=false){
   conversationHistory.push({role:'user',content:msg});
   const tid=addTyping();
   try{
-    const res=await fetch('https://api.anthropic.com/v1/messages',{
+    const res=await fetch(BACKEND_URL,{
       method:'POST',
-      headers:{'Content-Type':'application/json','x-api-key':API_KEY,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
-      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,system:systemPrompt,messages:conversationHistory})
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({messages:conversationHistory})
     });
     const data=await res.json();
     removeTyping(tid);
     const reply=data.content?.[0]?.text||"Tell me more about where you are in your career right now.";
     addMsg('zenith',reply);
     conversationHistory.push({role:'assistant',content:reply});
-    // Only speak if user is in voice mode
     if(voiceMode)speakText(reply);
   }catch(e){
     removeTyping(tid);
