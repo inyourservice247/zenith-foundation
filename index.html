@@ -682,17 +682,26 @@ async function sendMessage(fromVoice=false){
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify({messages:conversationHistory})
     });
+    if(!res.ok){
+      const errText=await res.text();
+      removeTyping(tid);
+      addMsg('zenith','Server error '+res.status+': '+errText);
+      return;
+    }
     const data=await res.json();
     removeTyping(tid);
+    if(data.error){
+      addMsg('zenith','API error: '+JSON.stringify(data.error));
+      return;
+    }
     const reply=data.content?.[0]?.text||"Tell me more about where you are in your career right now.";
     addMsg('zenith',reply);
     conversationHistory.push({role:'assistant',content:reply});
     if(voiceMode)speakText(reply);
   }catch(e){
     removeTyping(tid);
-    const fb="I'm here. Could you tell me a bit more about where you are in your career right now?";
-    addMsg('zenith',fb);
-    if(voiceMode)speakText(fb);
+    addMsg('zenith','Connection failed: '+e.message+'. Is the Vercel backend deployed?');
+    console.error('Zenith fetch error:',e);
   }
 }
 
@@ -720,20 +729,59 @@ function removeTyping(id){document.getElementById(id)?.remove()}
 // VOICE - TEXT TO SPEECH
 const synth=window.speechSynthesis;
 let currentUtterance=null;
-function speakText(text){
-  if(!synth)return;
-  const clean=text.replace(/<[^>]*>/g,'').replace(/\*+/g,'').replace(/[✦◎◈◉⟡★]/g,'').trim();
-  if(currentUtterance)synth.cancel();
-  currentUtterance=new SpeechSynthesisUtterance(clean);
-  currentUtterance.rate=0.88;currentUtterance.pitch=1.0;currentUtterance.volume=1.0;
+let voicesReady=false;
+let voiceQueue=null;
+
+function getFemalevoice(){
   const voices=synth.getVoices();
-  const preferred=voices.find(v=>/Samantha|Karen|Moira|Google UK Female|Microsoft Aria/i.test(v.name))
+  // Priority list — sweet, clear female English voices
+  return voices.find(v=>/Samantha/i.test(v.name))
+    ||voices.find(v=>/Karen/i.test(v.name))
+    ||voices.find(v=>/Moira/i.test(v.name))
+    ||voices.find(v=>/Tessa/i.test(v.name))
+    ||voices.find(v=>/Veena/i.test(v.name))
+    ||voices.find(v=>/Aria/i.test(v.name))
+    ||voices.find(v=>/Zira/i.test(v.name))
+    ||voices.find(v=>/Google UK English Female/i.test(v.name))
+    ||voices.find(v=>/Google US English/i.test(v.name)&&v.name.toLowerCase().includes('female'))
+    ||voices.find(v=>v.lang==='en-US'&&v.name.toLowerCase().includes('female'))
+    ||voices.find(v=>v.lang==='en-GB'&&v.name.toLowerCase().includes('female'))
     ||voices.find(v=>v.lang.startsWith('en')&&v.name.toLowerCase().includes('female'))
-    ||voices.find(v=>v.lang.startsWith('en'))||voices[0];
-  if(preferred)currentUtterance.voice=preferred;
+    ||voices.find(v=>v.lang.startsWith('en'))
+    ||voices[0];
+}
+
+function doSpeak(text){
+  const clean=text.replace(/<[^>]*>/g,'').replace(/\*+/g,'').replace(/[✦◎◈◉⟡★]/g,'').trim();
+  if(!clean)return;
+  synth.cancel();
+  currentUtterance=new SpeechSynthesisUtterance(clean);
+  currentUtterance.rate=0.88;
+  currentUtterance.pitch=1.08;  // slightly higher = sweeter
+  currentUtterance.volume=1.0;
+  const v=getFemalevoice();
+  if(v)currentUtterance.voice=v;
   synth.speak(currentUtterance);
 }
-if(synth&&'onvoiceschanged' in synth){synth.onvoiceschanged=()=>synth.getVoices()}
+
+function speakText(text){
+  if(!synth)return;
+  if(synth.getVoices().length>0){
+    doSpeak(text);
+  } else {
+    // Voices not loaded yet — queue it
+    voiceQueue=text;
+  }
+}
+
+if(synth){
+  synth.onvoiceschanged=()=>{
+    voicesReady=true;
+    if(voiceQueue){doSpeak(voiceQueue);voiceQueue=null;}
+  };
+  // Trigger voice load
+  synth.getVoices();
+}
 
 // VOICE - SPEECH TO TEXT
 let recognition=null,isRecording=false;
