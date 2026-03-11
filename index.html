@@ -652,7 +652,7 @@ document.querySelectorAll('[data-reveal]').forEach(el=>obs.observe(el));
 function openAI(){document.getElementById('aiModal').classList.add('open')}
 function closeAI(){document.getElementById('aiModal').classList.remove('open');stopVoice()}
 function openAIWithQ(q){openAI();setTimeout(()=>{document.getElementById('aiInput').value=q;sendMessage()},400)}
-function selectQ(q){document.getElementById('aiInput').value=q;sendMessage()}
+function selectQ(q){voiceMode=false;document.getElementById('aiInput').value=q;sendMessage()}
 
 // CHAT
 const conversationHistory=[];
@@ -663,7 +663,10 @@ const systemPrompt=`You are Zenith, a warm, sharp, and empathetic AI career guid
 4. End every final answer with: "Does this roadmap resonate with you? If you'd like deeper personalised guidance, you can post your question to one of our expert counsellors — they respond within 24 hours."
 Keep responses warm, direct, under 200 words. No corporate jargon. Speak like a trusted senior who genuinely cares.`;
 
-async function sendMessage(){
+const API_KEY='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';
+let voiceMode=false; // true when user triggered via mic
+
+async function sendMessage(fromVoice=false){
   const input=document.getElementById('aiInput');
   const msg=input.value.trim();
   if(!msg)return;
@@ -674,7 +677,8 @@ async function sendMessage(){
   const tid=addTyping();
   try{
     const res=await fetch('https://api.anthropic.com/v1/messages',{
-      method:'POST',headers:{'Content-Type':'application/json'},
+      method:'POST',
+      headers:{'Content-Type':'application/json','x-api-key':API_KEY,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
       body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,system:systemPrompt,messages:conversationHistory})
     });
     const data=await res.json();
@@ -682,12 +686,13 @@ async function sendMessage(){
     const reply=data.content?.[0]?.text||"Tell me more about where you are in your career right now.";
     addMsg('zenith',reply);
     conversationHistory.push({role:'assistant',content:reply});
-    speakText(reply);
+    // Only speak if user is in voice mode
+    if(voiceMode)speakText(reply);
   }catch(e){
     removeTyping(tid);
     const fb="I'm here. Could you tell me a bit more about where you are in your career right now?";
     addMsg('zenith',fb);
-    speakText(fb);
+    if(voiceMode)speakText(fb);
   }
 }
 
@@ -720,7 +725,7 @@ function speakText(text){
   const clean=text.replace(/<[^>]*>/g,'').replace(/\*+/g,'').replace(/[✦◎◈◉⟡★]/g,'').trim();
   if(currentUtterance)synth.cancel();
   currentUtterance=new SpeechSynthesisUtterance(clean);
-  currentUtterance.rate=0.9;currentUtterance.pitch=1.0;currentUtterance.volume=0.9;
+  currentUtterance.rate=0.88;currentUtterance.pitch=1.0;currentUtterance.volume=1.0;
   const voices=synth.getVoices();
   const preferred=voices.find(v=>/Samantha|Karen|Moira|Google UK Female|Microsoft Aria/i.test(v.name))
     ||voices.find(v=>v.lang.startsWith('en')&&v.name.toLowerCase().includes('female'))
@@ -737,6 +742,7 @@ function startVoice(){
   const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
   if(!SR){alert('Voice input requires Chrome or Edge. Please type your message instead.');return}
   openAI();
+  voiceMode=true; // entering voice mode — Zenith will speak back
   recognition=new SR();
   recognition.lang='en-US';recognition.interimResults=true;recognition.continuous=false;
   isRecording=true;
@@ -753,7 +759,7 @@ function startVoice(){
     }
     input.value=final||interim;
     vt.textContent=final?`Heard: "${final}"`:interim?`"${interim}"...`:'Listening...';
-    if(final){stopVoice();setTimeout(()=>sendMessage(),400)}
+    if(final){stopVoice();setTimeout(()=>sendMessage(true),400)}
   };
   recognition.onerror=()=>{vt.textContent='Could not hear clearly. Try again.';setTimeout(stopVoice,1500)};
   recognition.onend=()=>{if(isRecording)stopVoice()};
@@ -766,6 +772,9 @@ function stopVoice(){
   document.getElementById('micBtn').textContent='🎙';
   setTimeout(()=>document.getElementById('voiceStatus').classList.remove('show'),1000);
 }
+
+// Typing in the input box switches back to text mode (no voice playback)
+document.getElementById('aiInput').addEventListener('keydown',()=>{voiceMode=false})
 </script>
 </body>
 </html>
